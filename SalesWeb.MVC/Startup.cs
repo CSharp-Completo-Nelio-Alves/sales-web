@@ -1,4 +1,7 @@
-﻿namespace SalesWeb.MVC
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using SalesWeb.MVC.Data;
+namespace SalesWeb.MVC
 {
     public class Startup
     {
@@ -12,6 +15,9 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<SalesWebContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("SalesWebContext")));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
