@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using SalesWeb.MVC.Data;
 namespace SalesWeb.MVC
 {
@@ -16,8 +15,11 @@ namespace SalesWeb.MVC
         {
             services.AddControllersWithViews();
 
+            var connectionString = Configuration.GetConnectionString("SalesWebContext");
+
             services.AddDbContext<SalesWebContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("SalesWebContext")));
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), builder => builder.MigrationsAssembly("SalesWeb.MVC"))
+            );
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
