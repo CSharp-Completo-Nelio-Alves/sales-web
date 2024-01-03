@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SalesWeb.MVC.Data;
 
@@ -10,9 +11,11 @@ using SalesWeb.MVC.Data;
 namespace SalesWeb.MVC.Migrations
 {
     [DbContext(typeof(SalesWebContext))]
-    partial class SalesWebContextModelSnapshot : ModelSnapshot
+    [Migration("20240103150342_OtherEntities")]
+    partial class OtherEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +33,7 @@ namespace SalesWeb.MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Department", (string)null);
+                    b.ToTable("Department");
                 });
 
             modelBuilder.Entity("SalesWeb.MVC.Models.SalesRecord", b =>
@@ -55,7 +58,7 @@ namespace SalesWeb.MVC.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("SalesRecord", (string)null);
+                    b.ToTable("SalesRecord");
                 });
 
             modelBuilder.Entity("SalesWeb.MVC.Models.Seller", b =>
@@ -83,7 +86,7 @@ namespace SalesWeb.MVC.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Seller", (string)null);
+                    b.ToTable("Seller");
                 });
 
             modelBuilder.Entity("SalesWeb.MVC.Models.SalesRecord", b =>
