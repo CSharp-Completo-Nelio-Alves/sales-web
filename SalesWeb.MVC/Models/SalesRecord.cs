@@ -16,11 +16,12 @@ namespace SalesWeb.MVC.Models
             
         }
 
-        public SalesRecord(DateTime date, SaleStatus status, decimal amount)
+        public SalesRecord(DateTime date, SaleStatus status, decimal amount, Seller seller)
         {
             Date = date;
             Status = status;
             Amount = amount;
+            Seller = seller;
         }
 
         public decimal Amount

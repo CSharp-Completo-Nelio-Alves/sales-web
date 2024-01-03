@@ -20,11 +20,17 @@ namespace SalesWeb.MVC
             services.AddDbContext<SalesWebContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), builder => builder.MigrationsAssembly("SalesWeb.MVC"))
             );
+
+            services.AddScoped<SeedingService>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SeedingService seed)
         {
-            if (!env.IsDevelopment())
+            if (env.IsDevelopment())
+            {
+                seed.Seed();
+            }
+            else
             {
                 app.UseExceptionHandler("/Home/Error");
 

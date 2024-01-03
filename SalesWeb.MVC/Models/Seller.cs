@@ -21,12 +21,13 @@ namespace SalesWeb.MVC.Models
             
         }
 
-        public Seller(string name, string email, DateTime birthDate, decimal baseSalary)
+        public Seller(string name, string email, DateTime birthDate, decimal baseSalary, Department department)
         {
             Name = name;
             Email = email;
             BirthDate = birthDate;
             BaseSalary = baseSalary;
+            Department = department;
         }
 
         public string Name
