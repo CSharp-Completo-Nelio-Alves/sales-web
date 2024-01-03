@@ -3,8 +3,10 @@
     public class Department : IComparable<Department>
     {
         private string _name;
+        private List<Seller> _sellers = new();
 
         public int Id { get; set; }
+        public ICollection<Seller> Sellers => _sellers.AsReadOnly();
 
         public Department()
         {
@@ -27,6 +29,10 @@
                 _name = value.Trim();
             }
         }
+
+        public void AddSeller(Seller seller) => _sellers.Add(seller);
+
+        public decimal TotalSales(DateTime initial, DateTime final) => _sellers.Select(s => s.TotalSales(initial, final)).DefaultIfEmpty().Sum();
 
         public override string ToString() => $"Id: {Id}, Name: {Name}";
 
