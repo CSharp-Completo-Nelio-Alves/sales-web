@@ -12,6 +12,31 @@ namespace SalesWeb.MVC.Services
             _context = context;
         }
 
+        public void Create(Department department)
+        {
+            if (DepartmentExists(department))
+                return;
+
+            _context.Department.Add(department);
+            _context.SaveChanges();
+        }
+
+        public void Update(Department department)
+        {
+            _context.Department.Update(department);
+            _context.SaveChanges();
+        }
+
+        public void Delete(Department department)
+        {
+            _context.Department.Remove(department);
+            _context.SaveChanges();
+        }
+
+        public Department Get(int id) => _context.Department.Find(id);
+
         public IEnumerable<Department> FindAll() => _context.Department.OrderBy(d => d.Name).AsEnumerable();
+
+        public bool DepartmentExists(Department department) => _context.Department.Any(d => d.Name.Equals(department.Name));
     }
 }
