@@ -35,7 +35,7 @@ namespace SalesWeb.MVC.Services
 
         public Department Get(int id) => _context.Department.Find(id);
 
-        public IEnumerable<Department> FindAll() => _context.Department.OrderBy(d => d.Name).AsEnumerable();
+        public IEnumerable<Department> GetAll() => _context.Department.OrderBy(d => d.Name).AsEnumerable();
 
         public bool DepartmentExists(Department department) => _context.Department.Any(d => d.Name.Equals(department.Name));
     }

@@ -12,17 +12,17 @@ namespace SalesWeb.MVC.Services
             _context = context;
         }
 
-        public IEnumerable<Seller> FindAll() => _context.Seller.AsEnumerable();
-
-        public void Add(Seller seller)
+        public void Create(Seller seller)
         {
-            if (ValidateIfAlredyRegistered(seller))
+            if (SellerExists(seller))
                 return;
 
             _context.Add(seller);
             _context.SaveChanges();
         }
 
-        public bool ValidateIfAlredyRegistered(Seller seller) => _context.Seller.FirstOrDefault(s => s.Email.Equals(seller.Email)) is not null;
+        public IEnumerable<Seller> GetAll() => _context.Seller.AsEnumerable();
+
+        public bool SellerExists(Seller seller) => _context.Seller.FirstOrDefault(s => s.Email.Equals(seller.Email)) is not null;
     }
 }

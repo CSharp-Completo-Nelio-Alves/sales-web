@@ -17,7 +17,7 @@ namespace SalesWeb.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-              return View(_service.FindAll());
+              return View(_service.GetAll());
         }
 
         [HttpGet]

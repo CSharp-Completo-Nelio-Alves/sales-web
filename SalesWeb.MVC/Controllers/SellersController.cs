@@ -19,7 +19,7 @@ namespace SalesWeb.MVC.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var list = _service.FindAll();
+            var list = _service.GetAll();
 
             return View(list.OrderBy(s => s.Name));
         }
@@ -29,7 +29,7 @@ namespace SalesWeb.MVC.Controllers
         {
             var model = new SellerViewModel
             {
-                Departments = _departmentService.FindAll()
+                Departments = _departmentService.GetAll()
             };
 
             return View(model);
@@ -39,7 +39,7 @@ namespace SalesWeb.MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind("Name,Email,BirthDate,BaseSalary,DepartmentId")]Seller seller)
         {
-            _service.Add(seller);
+            _service.Create(seller);
 
             return RedirectToAction(nameof(Index));
         }
