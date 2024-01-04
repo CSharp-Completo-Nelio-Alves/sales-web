@@ -37,9 +37,32 @@ namespace SalesWeb.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Name,Email,BirthDate,BaseSalary,DepartmentId")]Seller seller)
+        public IActionResult Create([Bind("Name,Email,BirthDate,BaseSalary,DepartmentId")] Seller seller)
         {
             _service.Create(seller);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if (id is null)
+                return NotFound();
+
+            var seller = _service.Get(id.Value);
+
+            if (seller is null)
+                return NotFound();
+
+            return View(seller);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _service.Delete(id);
 
             return RedirectToAction(nameof(Index));
         }

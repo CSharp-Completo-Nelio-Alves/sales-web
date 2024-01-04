@@ -28,9 +28,9 @@
                 <td>@Html.DisplayFor(model => item.BirthDate)</td>
                 <td>@Html.DisplayFor(model => item.BaseSalary)</td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "Sellers", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", "Sellers", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", "Sellers", new { id = item.Id })
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                 </td>
             </tr>
         }
