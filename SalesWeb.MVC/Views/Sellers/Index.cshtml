@@ -1,7 +1,36 @@
-﻿@{
+﻿@model IEnumerable<Seller>
+
+@{
     ViewData["Title"] = "Sellers";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<p>Initial page for Sellers</p>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr class="table-primary">
+            <td>@Html.DisplayNameFor(model => model.Name)</td>
+            <td>@Html.DisplayNameFor(model => model.Email)</td>
+            <td>@Html.DisplayNameFor(model => model.BirthDate)</td>
+            <td>@Html.DisplayNameFor(model => model.BaseSalary)</td>
+            <td></td>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(model => item.Name)</td>
+                <td>@Html.DisplayFor(model => item.Email)</td>
+                <td>@Html.DisplayFor(model => item.BirthDate)</td>
+                <td>@Html.DisplayFor(model => item.BaseSalary)</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Sellers", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", "Sellers", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", "Sellers", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

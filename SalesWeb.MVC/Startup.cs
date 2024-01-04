@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesWeb.MVC.Data;
+using SalesWeb.MVC.Services;
 namespace SalesWeb.MVC
 {
     public class Startup
@@ -22,6 +23,7 @@ namespace SalesWeb.MVC
             );
 
             services.AddScoped<SeedingService>();
+            services.AddScoped<SellerService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SeedingService seed)
