@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace SalesWeb.MVC.Models
 {
@@ -140,7 +142,7 @@ namespace SalesWeb.MVC.Models
             if (ReferenceEquals (this, other))
                 return 0;
 
-            return Name.CompareTo(other.Name);
+            return Email.CompareTo(other.Email);
         }
 
         #endregion

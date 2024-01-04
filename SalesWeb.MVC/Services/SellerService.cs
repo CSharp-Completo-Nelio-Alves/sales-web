@@ -13,5 +13,16 @@ namespace SalesWeb.MVC.Services
         }
 
         public IEnumerable<Seller> FindAll() => _context.Seller.AsEnumerable();
+
+        public void Add(Seller seller)
+        {
+            if (ValidateIfAlredyRegistered(seller))
+                return;
+
+            _context.Add(seller);
+            _context.SaveChanges();
+        }
+
+        public bool ValidateIfAlredyRegistered(Seller seller) => _context.Seller.FirstOrDefault(s => s.Email.Equals(seller.Email)) is not null;
     }
 }
