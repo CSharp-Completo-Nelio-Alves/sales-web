@@ -16,6 +16,8 @@ namespace SalesWeb.MVC.Models
         public const int MinimumAge = 16;
 
         public int Id { get; set; }
+        public int DepartmentId { get; set; }
+
         public ICollection<SalesRecord> Sales => _sales.AsReadOnly();
 
         public Seller()
