@@ -2,6 +2,7 @@
 using SalesWeb.MVC.Models;
 using SalesWeb.MVC.Models.ViewModels;
 using SalesWeb.MVC.Services;
+using SalesWeb.MVC.Services.Exceptions;
 
 namespace SalesWeb.MVC.Controllers
 {
@@ -42,6 +43,49 @@ namespace SalesWeb.MVC.Controllers
             _service.Create(seller);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if (id is null)
+                return NotFound();
+
+            var seller = _service.Get(id.Value);
+
+            if (seller is null)
+                return NotFound();
+
+            var model = new SellerViewModel
+            {
+                Seller = seller,
+                Departments = _departmentService.GetAll()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, [Bind("Id,Name,Email,BirthDate,BaseSalary,DepartmentId")] Seller seller)
+        {
+            if (id != seller.Id)
+                return BadRequest();
+
+            try
+            {
+                _service.Update(seller);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]

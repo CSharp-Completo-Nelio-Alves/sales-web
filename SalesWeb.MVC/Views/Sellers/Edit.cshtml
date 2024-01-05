@@ -1,0 +1,45 @@
+﻿@model SellerViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Seller.Id" />
+
+            <div class="m-3">
+                <label asp-for="Seller.Name" class="form-label"></label>
+                <input asp-for="Seller.Name" class="form-control" />
+            </div>
+
+            <div class="m-3">
+                <label asp-for="Seller.Email" class="for-label"></label>
+                <input asp-for="Seller.Email" class="form-control" />
+            </div>
+
+            <div class="m-3">
+                <label asp-for="Seller.BirthDate" class="for-label"></label>
+                <input asp-for="Seller.BirthDate" class="form-control" />
+            </div>
+
+            <div class="m-3">
+                <label asp-for="Seller.BaseSalary" class="for-label"></label>
+                <input asp-for="Seller.BaseSalary" class="form-control" />
+            </div>
+
+            <div class="m-3">
+                <label asp-for="Seller.Department" class="for-label"></label>
+                <select asp-for="Seller.DepartmentId" asp-items="@(new SelectList(Model.Departments, "Id", "Name"))" class="form-control"></select>
+            </div>
+
+            <div class="m-3">
+                <input type="submit" class="btn btn-primary" value="Save" />
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
