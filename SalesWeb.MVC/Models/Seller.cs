@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Linq.Expressions;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace SalesWeb.MVC.Models
@@ -46,6 +45,8 @@ namespace SalesWeb.MVC.Models
             }
         }
 
+        [Display(Name = "E-mail")]
+        [DataType(DataType.EmailAddress)]
         public string Email
         {
             get => _email;
@@ -63,6 +64,9 @@ namespace SalesWeb.MVC.Models
             }
         }
 
+        [Display(Name = "Birth Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime BirthDate
         {
             get => _birthDate;
@@ -80,6 +84,8 @@ namespace SalesWeb.MVC.Models
             }
         }
 
+        [Display(Name = "Base Salary")]
+        [DataType(DataType.Currency)]
         public decimal BaseSalary
         {
             get => _baseSalary;
