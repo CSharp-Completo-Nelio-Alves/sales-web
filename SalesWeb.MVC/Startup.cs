@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
 using SalesWeb.MVC.Data;
 using SalesWeb.MVC.Services;
+using System.Globalization;
 namespace SalesWeb.MVC
 {
     public class Startup
@@ -29,6 +31,23 @@ namespace SalesWeb.MVC
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SeedingService seed)
         {
+            var defaultCulture = new CultureInfo("en-US");
+            var defaultRequestCulture = new RequestCulture(defaultCulture, defaultCulture);
+
+            var cultureAllowed = new List<CultureInfo>()
+            {
+                defaultCulture,
+            };
+
+            var locationOptions = new RequestLocalizationOptions()
+            {
+                DefaultRequestCulture = defaultRequestCulture,
+                SupportedCultures = cultureAllowed,
+                SupportedUICultures = cultureAllowed,
+            };
+
+            app.UseRequestLocalization(locationOptions);
+
             if (env.IsDevelopment())
             {
                 seed.Seed();
