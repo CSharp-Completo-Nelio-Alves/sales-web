@@ -45,6 +45,20 @@ namespace SalesWeb.MVC.Controllers
         }
 
         [HttpGet]
+        public IActionResult Details(int? id)
+        {
+            if (id is null)
+                return NotFound();
+
+            var seller = _service.Get(id.Value);
+
+            if (seller is null)
+                return NotFound();
+
+            return View(seller);
+        }
+
+        [HttpGet]
         public IActionResult Delete(int? id)
         {
             if (id is null)

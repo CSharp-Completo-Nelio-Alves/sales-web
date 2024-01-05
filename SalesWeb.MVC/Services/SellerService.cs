@@ -1,4 +1,5 @@
-﻿using SalesWeb.MVC.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SalesWeb.MVC.Data;
 using SalesWeb.MVC.Models;
 
 namespace SalesWeb.MVC.Services
@@ -32,7 +33,7 @@ namespace SalesWeb.MVC.Services
             _context.SaveChanges();
         }
 
-        public Seller Get(int id) => _context.Seller.Find(id);
+        public Seller Get(int id) => _context.Seller.Include(d => d.Department).FirstOrDefault(d => d.Id == id);
 
         public IEnumerable<Seller> GetAll() => _context.Seller.AsEnumerable();
 

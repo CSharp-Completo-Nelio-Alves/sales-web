@@ -1,0 +1,31 @@
+﻿@model Seller
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-1">@Html.DisplayNameFor(model => model.Name)</dt>
+        <dd class="col-11">@Html.DisplayFor(model => model.Name)</dd>
+
+        <dt class="col-1">@Html.DisplayNameFor(model => model.Email)</dt>
+        <dd class="col-11">@Html.DisplayFor(model => model.Email)</dd>
+
+        <dt class="col-1">@Html.DisplayNameFor(model => model.BirthDate)</dt>
+        <dd class="col-11">@Html.DisplayFor(model => model.BirthDate)</dd>
+
+        <dt class="col-1">@Html.DisplayNameFor(model => model.BaseSalary)</dt>
+        <dd class="col-11">@Html.DisplayFor(model => model.BaseSalary)</dd>
+
+        <dt class="col-1">@Html.DisplayNameFor(model => model.Department)</dt>
+        <dd class="col-11">@Html.DisplayFor(model => model.Department.Name)</dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Return</a>
+</div>
