@@ -5,7 +5,7 @@ using SalesWeb.MVC.Services;
 
 namespace SalesWeb.MVC.Controllers
 {
-    public class DepartmentsController : Controller
+    public class DepartmentsController : BaseController
     {
         private readonly DepartmentService _service;
 
@@ -17,19 +17,19 @@ namespace SalesWeb.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-              return View(_service.GetAll());
+            return View(_service.GetAll());
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
             var department = _service.Get(id.Value);
 
             if (department is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             return View(department);
         }
@@ -39,7 +39,7 @@ namespace SalesWeb.MVC.Controllers
         {
             return View();
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name")] Department department)
@@ -58,12 +58,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
             var department = _service.Get(id.Value);
 
             if (department is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             return View(department);
         }
@@ -73,7 +73,7 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Department department)
         {
             if (id != department.Id)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
 
             if (ModelState.IsValid)
             {
@@ -84,12 +84,14 @@ namespace SalesWeb.MVC.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!_service.DepartmentExists(department))
-                        return NotFound();
+                        return RedirectToAction(nameof(Error), new { message = "Id not found" });
                     else
                         throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(department);
         }
 
@@ -97,12 +99,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
             var department = _service.Get(id.Value);
 
             if (department is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             return View(department);
         }
@@ -114,7 +116,7 @@ namespace SalesWeb.MVC.Controllers
             var department = _service.Get(id);
 
             if (department is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             _service.Delete(department);
 

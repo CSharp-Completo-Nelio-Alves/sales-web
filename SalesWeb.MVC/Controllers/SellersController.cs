@@ -2,11 +2,10 @@
 using SalesWeb.MVC.Models;
 using SalesWeb.MVC.Models.ViewModels;
 using SalesWeb.MVC.Services;
-using SalesWeb.MVC.Services.Exceptions;
 
 namespace SalesWeb.MVC.Controllers
 {
-    public class SellersController : Controller
+    public class SellersController : BaseController 
     {
         private readonly SellerService _service;
         private readonly DepartmentService _departmentService;
@@ -49,12 +48,12 @@ namespace SalesWeb.MVC.Controllers
         public IActionResult Edit(int? id)
         {
             if (id is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
             var seller = _service.Get(id.Value);
 
             if (seller is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             var model = new SellerViewModel
             {
@@ -70,7 +69,7 @@ namespace SalesWeb.MVC.Controllers
         public IActionResult Edit(int id, [Bind("Id,Name,Email,BirthDate,BaseSalary,DepartmentId")] Seller seller)
         {
             if (id != seller.Id)
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
 
             try
             {
@@ -78,13 +77,9 @@ namespace SalesWeb.MVC.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch (NotFoundException)
+            catch (ApplicationException ex)
             {
-                return NotFound();
-            }
-            catch (DbConcurrencyException)
-            {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
             }
         }
 
@@ -92,12 +87,12 @@ namespace SalesWeb.MVC.Controllers
         public IActionResult Details(int? id)
         {
             if (id is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
             var seller = _service.Get(id.Value);
 
             if (seller is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             return View(seller);
         }
@@ -106,12 +101,12 @@ namespace SalesWeb.MVC.Controllers
         public IActionResult Delete(int? id)
         {
             if (id is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
             var seller = _service.Get(id.Value);
 
             if (seller is null)
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             return View(seller);
         }
