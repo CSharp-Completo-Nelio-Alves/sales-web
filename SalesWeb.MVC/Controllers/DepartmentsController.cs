@@ -46,9 +46,16 @@ namespace SalesWeb.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _service.Create(department);
+                try
+                {
+                    _service.Create(department);
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ApplicationException ex)
+                {
+                    return RedirectToAction(nameof(Error), new { message = ex.Message });
+                }
             }
 
             return View(department);
@@ -81,12 +88,9 @@ namespace SalesWeb.MVC.Controllers
                 {
                     _service.Update(department);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (ApplicationException ex)
                 {
-                    if (!_service.DepartmentExists(department))
-                        return RedirectToAction(nameof(Error), new { message = "Id not found" });
-                    else
-                        throw;
+                    return RedirectToAction(nameof(Error), new { message = ex.Message });
                 }
 
                 return RedirectToAction(nameof(Index));
