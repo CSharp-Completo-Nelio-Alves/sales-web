@@ -19,7 +19,7 @@ namespace SalesWeb.MVC.Services
         public async Task CreateAsync(Seller seller)
         {
             if (await SellerExistsAsync(seller))
-                throw new DomainException("Seller already registered"); // TODO: Centralizar mensagens de erro
+                throw new DomainException(string.Format(ErrorMessagesHelper.EntityAlreadyRegistered, nameof(Seller)));
 
             _context.Add(seller);
 
@@ -29,7 +29,7 @@ namespace SalesWeb.MVC.Services
         public async Task UpdateAsync(Seller seller)
         {
             if (!await SellerExistsAsync(seller.Id))
-                throw new NotFoundException("Seller not found");
+                throw new NotFoundException(string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Seller)));
 
             try
             {

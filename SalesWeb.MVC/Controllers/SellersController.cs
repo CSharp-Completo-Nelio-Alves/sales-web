@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SalesWeb.MVC.Helpers;
 using SalesWeb.MVC.Helpers.ExtesionsMethods;
 using SalesWeb.MVC.Models;
 using SalesWeb.MVC.Models.ViewModels;
@@ -62,12 +63,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
 
             var seller = await _service.GetAsync(id.Value);
 
             if (seller is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not found" });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Seller)) });
 
             var model = new SellerViewModel
             {
@@ -83,7 +84,7 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,BirthDate,BaseSalary,DepartmentId")] Seller seller)
         {
             if (id != seller.Id)
-                return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdMistmatch });
 
             if (!ModelState.IsValid)
             {
@@ -114,12 +115,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
 
             var seller = await _service.GetAsync(id.Value);
 
             if (seller is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not found" });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Seller)) });
 
             return View(seller);
         }
@@ -128,12 +129,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
 
             var seller = await _service.GetAsync(id.Value);
 
             if (seller is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not found" });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Seller)) });
 
             return View(seller);
         }

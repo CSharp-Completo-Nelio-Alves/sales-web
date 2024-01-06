@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using SalesWeb.MVC.Helpers;
 using SalesWeb.MVC.Helpers.ExtesionsMethods;
 using SalesWeb.MVC.Models;
 using SalesWeb.MVC.Services;
@@ -25,12 +25,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
 
             var department = await _service.GetAsync(id.Value);
 
             if (department is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not found" });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)) });
 
             return View(department);
         }
@@ -68,12 +68,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
 
             var department = await _service.GetAsync(id.Value);
 
             if (department is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not found" });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)) });
 
             return View(department);
         }
@@ -83,7 +83,7 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Department department)
         {
             if (id != department.Id)
-                return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdMistmatch });
 
             if (ModelState.IsValid)
             {
@@ -108,12 +108,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
 
             var department = await _service.GetAsync(id.Value);
 
             if (department is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not found" });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)) });
 
             return View(department);
         }
@@ -127,7 +127,7 @@ namespace SalesWeb.MVC.Controllers
                 var department = await _service.GetAsync(id);
 
                 if (department is null)
-                    return RedirectToAction(nameof(Error), new { message = "Id not found" });
+                    return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)) });
 
                 await _service.DeleteAsync(department);
             }

@@ -19,7 +19,7 @@ namespace SalesWeb.MVC.Services
         public async Task CreateAsync(Department department)
         {
             if (await DepartmentExistsAsync(department))
-                throw new DomainException("Department already registered");
+                throw new DomainException(string.Format(ErrorMessagesHelper.EntityAlreadyRegistered, nameof(Department)));
 
             _context.Department.Add(department);
             
@@ -29,7 +29,7 @@ namespace SalesWeb.MVC.Services
         public async Task UpdateAsync(Department department)
         {
             if (!await DepartmentExistsAsync(department.Id))
-                throw new NotFoundException("Id not found");
+                throw new NotFoundException(string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)));
 
             try
             {
