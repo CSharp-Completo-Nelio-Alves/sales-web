@@ -18,19 +18,19 @@ namespace SalesWeb.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _service.GetAll();
+            var list = await _service.GetAllAsync();
 
             return View(list.OrderBy(s => s.Name));
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new SellerViewModel
             {
-                Departments = _departmentService.GetAll()
+                Departments = await _departmentService.GetAllAsync()
             };
 
             return View(model);
@@ -38,7 +38,7 @@ namespace SalesWeb.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Name,Email,BirthDate,BaseSalary,DepartmentId")] Seller seller)
+        public async Task<IActionResult> Create([Bind("Name,Email,BirthDate,BaseSalary,DepartmentId")] Seller seller)
         {
             if (!ModelState.IsValid)
             {
@@ -47,24 +47,24 @@ namespace SalesWeb.MVC.Controllers
                 var model = new SellerViewModel
                 {
                     Seller = seller,
-                    Departments = _departmentService.GetAll(),
+                    Departments = await _departmentService.GetAllAsync(),
                 };
 
                 return View(model);
             }
 
-            _service.Create(seller);
+            await _service.CreateAsync(seller);
 
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
-            var seller = _service.Get(id.Value);
+            var seller = await _service.GetAsync(id.Value);
 
             if (seller is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -72,7 +72,7 @@ namespace SalesWeb.MVC.Controllers
             var model = new SellerViewModel
             {
                 Seller = seller,
-                Departments = _departmentService.GetAll()
+                Departments = await _departmentService.GetAllAsync()
             };
 
             return View(model);
@@ -80,7 +80,7 @@ namespace SalesWeb.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Name,Email,BirthDate,BaseSalary,DepartmentId")] Seller seller)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,BirthDate,BaseSalary,DepartmentId")] Seller seller)
         {
             if (id != seller.Id)
                 return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
@@ -92,7 +92,7 @@ namespace SalesWeb.MVC.Controllers
                 var model = new SellerViewModel
                 {
                     Seller = seller,
-                    Departments = _departmentService.GetAll(),
+                    Departments = await _departmentService.GetAllAsync(),
                 };
 
                 return View(model);
@@ -100,7 +100,7 @@ namespace SalesWeb.MVC.Controllers
 
             try
             {
-                _service.Update(seller);
+                await _service.UpdateAsync(seller);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -111,12 +111,12 @@ namespace SalesWeb.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
-            var seller = _service.Get(id.Value);
+            var seller = await _service.GetAsync(id.Value);
 
             if (seller is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -125,12 +125,12 @@ namespace SalesWeb.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
-            var seller = _service.Get(id.Value);
+            var seller = await _service.GetAsync(id.Value);
 
             if (seller is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -140,9 +140,9 @@ namespace SalesWeb.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _service.Delete(id);
+            await _service.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));
         }

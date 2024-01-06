@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesWeb.MVC.Data;
 using SalesWeb.MVC.Models;
+using SalesWeb.MVC.Models.Exceptions;
 using SalesWeb.MVC.Services.Exceptions;
-using System.Data;
 
 namespace SalesWeb.MVC.Services
 {
@@ -15,24 +15,26 @@ namespace SalesWeb.MVC.Services
             _context = context;
         }
 
-        public void Create(Seller seller)
+        public async Task CreateAsync(Seller seller)
         {
-            if (SellerExists(seller))
-                return;
+            if (await SellerExistsAsync(seller))
+                throw new DomainException("Seller already registered");
 
             _context.Add(seller);
-            _context.SaveChanges();
+
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Seller seller)
+        public async Task UpdateAsync(Seller seller)
         {
-            if (!SellerExists(seller.Id))
+            if (!await SellerExistsAsync(seller.Id))
                 throw new NotFoundException("Seller not found");
 
             try
             {
                 _context.Update(seller);
-                _context.SaveChanges();
+
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -40,23 +42,24 @@ namespace SalesWeb.MVC.Services
             }
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var seller = Get(id);
+            var seller = await GetAsync(id);
 
             if (seller is null)
                 return;
 
             _context.Seller.Remove(seller);
-            _context.SaveChanges();
+            
+            await _context.SaveChangesAsync();
         }
 
-        public Seller Get(int id) => _context.Seller.Include(d => d.Department).FirstOrDefault(d => d.Id == id);
+        public async Task<Seller> GetAsync(int id) => await _context.Seller.Include(d => d.Department).FirstOrDefaultAsync(d => d.Id == id);
 
-        public IEnumerable<Seller> GetAll() => _context.Seller.AsEnumerable();
+        public async Task<IEnumerable<Seller>> GetAllAsync() => await _context.Seller.ToListAsync();
 
-        public bool SellerExists(int id) => _context.Seller.Any(d => d.Id == id);
+        public async Task<bool> SellerExistsAsync(int id) => await _context.Seller.AnyAsync(d => d.Id == id);
 
-        public bool SellerExists(Seller seller) => _context.Seller.FirstOrDefault(s => s.Email.Equals(seller.Email)) is not null;
+        public async Task<bool> SellerExistsAsync(Seller seller) => await _context.Seller.FirstOrDefaultAsync(s => s.Email.Equals(seller.Email)) is not null;
     }
 }

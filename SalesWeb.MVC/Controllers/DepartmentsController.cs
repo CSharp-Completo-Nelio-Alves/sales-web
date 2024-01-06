@@ -18,7 +18,7 @@ namespace SalesWeb.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(_service.GetAll());
+            return View(await _service.GetAllAsync());
         }
 
         [HttpGet]
@@ -27,7 +27,7 @@ namespace SalesWeb.MVC.Controllers
             if (id is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
-            var department = _service.Get(id.Value);
+            var department = await _service.GetAsync(id.Value);
 
             if (department is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -49,7 +49,7 @@ namespace SalesWeb.MVC.Controllers
             {
                 try
                 {
-                    _service.Create(department);
+                    await _service.CreateAsync(department);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -70,7 +70,7 @@ namespace SalesWeb.MVC.Controllers
             if (id is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
-            var department = _service.Get(id.Value);
+            var department = await _service.GetAsync(id.Value);
 
             if (department is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -89,7 +89,7 @@ namespace SalesWeb.MVC.Controllers
             {
                 try
                 {
-                    _service.Update(department);
+                    await _service.UpdateAsync(department);
                 }
                 catch (ApplicationException ex)
                 {
@@ -110,7 +110,7 @@ namespace SalesWeb.MVC.Controllers
             if (id is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
 
-            var department = _service.Get(id.Value);
+            var department = await _service.GetAsync(id.Value);
 
             if (department is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -122,12 +122,12 @@ namespace SalesWeb.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var department = _service.Get(id);
+            var department = await _service.GetAsync(id);
 
             if (department is null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
 
-            _service.Delete(department);
+            await _service.DeleteAsync(department);
 
             return RedirectToAction(nameof(Index));
         }

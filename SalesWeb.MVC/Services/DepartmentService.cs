@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesWeb.MVC.Data;
 using SalesWeb.MVC.Models;
+using SalesWeb.MVC.Models.Exceptions;
 using SalesWeb.MVC.Services.Exceptions;
 
 namespace SalesWeb.MVC.Services
@@ -14,24 +15,26 @@ namespace SalesWeb.MVC.Services
             _context = context;
         }
 
-        public void Create(Department department)
+        public async Task CreateAsync(Department department)
         {
-            if (DepartmentExists(department))
-                throw new ApplicationException("Department already registered");
+            if (await DepartmentExistsAsync(department))
+                throw new DomainException("Department already registered");
 
             _context.Department.Add(department);
-            _context.SaveChanges();
+            
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Department department)
+        public async Task UpdateAsync(Department department)
         {
-            if (!DepartmentExists(department.Id))
+            if (!await DepartmentExistsAsync(department.Id))
                 throw new NotFoundException("Id not found");
 
             try
             {
                 _context.Department.Update(department);
-                _context.SaveChanges();
+
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -39,18 +42,19 @@ namespace SalesWeb.MVC.Services
             }
         }
 
-        public void Delete(Department department)
+        public async Task DeleteAsync(Department department)
         {
             _context.Department.Remove(department);
-            _context.SaveChanges();
+
+            await _context.SaveChangesAsync();
         }
 
-        public Department Get(int id) => _context.Department.Find(id);
+        public async Task<Department> GetAsync(int id) => await _context.Department.FindAsync(id);
 
-        public IEnumerable<Department> GetAll() => _context.Department.OrderBy(d => d.Name).AsEnumerable();
+        public async Task<IEnumerable<Department>> GetAllAsync() => await _context.Department.OrderBy(d => d.Name).ToListAsync();
 
-        public bool DepartmentExists(int id) => _context.Department.Any(d => d.Id == id);
+        public async Task<bool> DepartmentExistsAsync(int id) => await _context.Department.AnyAsync(d => d.Id == id);
 
-        public bool DepartmentExists(Department department) => _context.Department.Any(d => d.Name.Equals(department.Name));
+        public async Task<bool> DepartmentExistsAsync(Department department) => await _context.Department.AnyAsync(d => d.Name.Equals(department.Name));
     }
 }
