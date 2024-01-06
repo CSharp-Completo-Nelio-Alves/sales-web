@@ -1,10 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+﻿using Microsoft.AspNetCore.Mvc;
+using SalesWeb.MVC.Helpers;
+using SalesWeb.MVC.Helpers.ExtesionsMethods;
+using SalesWeb.MVC.Models.Exceptions;
+using System.ComponentModel.DataAnnotations;
 
 namespace SalesWeb.MVC.Models
 {
     public class Seller : IComparable<Seller>
     {
+        private const int _minimumLengthName = 2;
+        private const double _minimumSalary = 1500.00;
+
         private string _name;
         private string _email;
         private DateTime _birthDate;
@@ -33,39 +39,49 @@ namespace SalesWeb.MVC.Models
             Department = department;
         }
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = ErrorMessagesHelper.EmptyField)]
+        [MinLength(_minimumLengthName, ErrorMessage = ErrorMessagesHelper.MinimumCharacter)]
         public string Name
         {
             get => _name;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Name cannot be empty");
+                    throw new DomainException(string.Format(ErrorMessagesHelper.EmptyField, nameof(Name)));
 
-                _name = value.Trim();
+                var name = value.Trim();
+
+                if (name.Length < _minimumLengthName)
+                    throw new DomainException(string.Format(ErrorMessagesHelper.MinimumCharacter, nameof(Name), _minimumLengthName));
+
+                _name = name;
             }
         }
 
         [Display(Name = "E-mail")]
         [DataType(DataType.EmailAddress)]
+        [Required(AllowEmptyStrings = false, ErrorMessage = ErrorMessagesHelper.EmptyField)]
+        [RegularExpression(EmailHelper.RegexPattern, ErrorMessage = ErrorMessagesHelper.invalidField)]
         public string Email
         {
             get => _email;
             set 
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("E-mail cannot be empty");
+                    throw new DomainException(string.Format(ErrorMessagesHelper.EmptyField, nameof(Email)));
                 
                 var email = value.Trim().ToLower();
 
-                if (!ValidateEmail(email))
-                    throw new ArgumentException("Invalid e-mail");
+                if (!EmailHelper.ValidateEmail(email))
+                    throw new DomainException(string.Format(ErrorMessagesHelper.invalidField, nameof(Email)));
 
                 _email = email;
             }
         }
 
         [Display(Name = "Birth Date")]
-        [DataType(DataType.Date)]
+        [Required(ErrorMessage = ErrorMessagesHelper.EmptyField)]
+        [DataType(DataType.Date, ErrorMessage = ErrorMessagesHelper.invalidField)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime BirthDate
         {
@@ -73,26 +89,28 @@ namespace SalesWeb.MVC.Models
             set
             {
                 if (value >= DateTime.Now)
-                    throw new ArgumentException("Invalid birth date");
+                    throw new DomainException(string.Format(ErrorMessagesHelper.invalidField, "Birth Date"));
 
-                var age = CalculateAge(value);
+                var valid = value.ValidateAge(MinimumAge);
 
-                if (age < MinimumAge)
-                    throw new ArgumentException($"Age must be greather than {MinimumAge}");
+                if (!valid)
+                    throw new DomainException(ErrorMessagesHelper.InvalidSellerAge);
 
                 _birthDate = value;
             }
         }
 
         [Display(Name = "Base Salary")]
-        [DataType(DataType.Currency)]
+        [Required(ErrorMessage = ErrorMessagesHelper.EmptyField)]
+        [DataType(DataType.Currency, ErrorMessage = ErrorMessagesHelper.invalidField)]
+        [Range(_minimumSalary, double.MaxValue, ErrorMessage = ErrorMessagesHelper.MinimumSalary)]
         public decimal BaseSalary
         {
             get => _baseSalary;
             set
             {
                 if (value <= 0)
-                    throw new ArgumentException("Base salary must be greather than 0");
+                    throw new DomainException(string.Format(ErrorMessagesHelper.MinimumSalary, "Base Salary", _minimumSalary));
 
                 _baseSalary = value;
             }
@@ -151,24 +169,6 @@ namespace SalesWeb.MVC.Models
                 return 0;
 
             return Email.CompareTo(other.Email);
-        }
-
-        #endregion
-
-        #region Helpers Methods
-
-        private bool ValidateEmail(string email) =>
-            new Regex(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", RegexOptions.IgnoreCase).IsMatch(email);
-
-        private int CalculateAge(DateTime birthDate)
-        {
-            var currentDate = DateTime.Now;
-            var age = currentDate.Year - birthDate.Year;
-
-            if (currentDate.DayOfYear < birthDate.DayOfYear)
-                age -= 1;
-
-            return age;
         }
 
         #endregion

@@ -6,6 +6,8 @@
 
 <h2>@ViewData["Title"]</h2>
 
+<div asp-validation-summary=None class="text-danger"></div>
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
@@ -14,26 +16,31 @@
             <div class="m-3">
                 <label asp-for="Seller.Name" class="form-label"></label>
                 <input asp-for="Seller.Name" class="form-control" />
+                <span asp-validation-for="Seller.Name" class="text-danger"></span>
             </div>
 
             <div class="m-3">
                 <label asp-for="Seller.Email" class="for-label"></label>
                 <input asp-for="Seller.Email" class="form-control" />
+                <span asp-validation-for="Seller.Email" class="text-danger"></span>
             </div>
 
             <div class="m-3">
                 <label asp-for="Seller.BirthDate" class="for-label"></label>
                 <input asp-for="Seller.BirthDate" class="form-control" />
+                <span asp-validation-for="Seller.BirthDate" class="text-danger"></span>
             </div>
 
             <div class="m-3">
                 <label asp-for="Seller.BaseSalary" class="for-label"></label>
                 <input asp-for="Seller.BaseSalary" class="form-control" />
+                <span asp-validation-for="Seller.BaseSalary" class="text-danger"></span>
             </div>
 
             <div class="m-3">
                 <label asp-for="Seller.Department" class="for-label"></label>
                 <select asp-for="Seller.DepartmentId" asp-items="@(new SelectList(Model.Departments, "Id", "Name"))" class="form-control"></select>
+                <span asp-validation-for="Seller.DepartmentId" class="text-danger"></span>
             </div>
 
             <div class="m-3">
@@ -43,3 +50,9 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

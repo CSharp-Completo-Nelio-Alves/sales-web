@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SalesWeb.MVC.Helpers.ExtesionsMethods;
 using SalesWeb.MVC.Models;
 using SalesWeb.MVC.Models.ViewModels;
 using SalesWeb.MVC.Services;
 
 namespace SalesWeb.MVC.Controllers
 {
-    public class SellersController : BaseController 
+    public class SellersController : BaseController
     {
         private readonly SellerService _service;
         private readonly DepartmentService _departmentService;
@@ -39,6 +40,19 @@ namespace SalesWeb.MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind("Name,Email,BirthDate,BaseSalary,DepartmentId")] Seller seller)
         {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddExceptionErrors();
+
+                var model = new SellerViewModel
+                {
+                    Seller = seller,
+                    Departments = _departmentService.GetAll(),
+                };
+
+                return View(model);
+            }
+
             _service.Create(seller);
 
             return RedirectToAction(nameof(Index));
@@ -70,6 +84,19 @@ namespace SalesWeb.MVC.Controllers
         {
             if (id != seller.Id)
                 return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
+
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddExceptionErrors();
+
+                var model = new SellerViewModel
+                {
+                    Seller = seller,
+                    Departments = _departmentService.GetAll(),
+                };
+
+                return View(model);
+            }
 
             try
             {

@@ -1,7 +1,13 @@
-﻿namespace SalesWeb.MVC.Models
+﻿using SalesWeb.MVC.Helpers;
+using SalesWeb.MVC.Models.Exceptions;
+using System.ComponentModel.DataAnnotations;
+
+namespace SalesWeb.MVC.Models
 {
     public class Department : IComparable<Department>
     {
+        private const int _minimumLengthName = 2;
+
         private string _name;
         private List<Seller> _sellers = new();
 
@@ -18,13 +24,18 @@
             Name = name;
         }
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = ErrorMessagesHelper.EmptyField)]
+        [MinLength(_minimumLengthName, ErrorMessage = ErrorMessagesHelper.MinimumCharacter)]
         public string Name
         {
             get => _name;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Name cannot be empty");
+                    throw new DomainException(string.Format(ErrorMessagesHelper.EmptyField, nameof(Name)));
+
+                if (value.Length < _minimumLengthName)
+                    throw new DomainException(string.Format(ErrorMessagesHelper.MinimumCharacter, nameof(Name), _minimumLengthName));
 
                 _name = value.Trim();
             }

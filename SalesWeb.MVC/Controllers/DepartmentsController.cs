@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SalesWeb.MVC.Helpers.ExtesionsMethods;
 using SalesWeb.MVC.Models;
 using SalesWeb.MVC.Services;
 
@@ -58,6 +59,8 @@ namespace SalesWeb.MVC.Controllers
                 }
             }
 
+            ModelState.AddExceptionErrors();
+
             return View(department);
         }
 
@@ -95,6 +98,8 @@ namespace SalesWeb.MVC.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
+            ModelState.AddExceptionErrors();
 
             return View(department);
         }
