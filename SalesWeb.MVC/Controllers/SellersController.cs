@@ -142,9 +142,16 @@ namespace SalesWeb.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            await _service.DeleteAsync(id);
+            try
+            {
+                await _service.DeleteAsync(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (ApplicationException ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
         }
     }
 }

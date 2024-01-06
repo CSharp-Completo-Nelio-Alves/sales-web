@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesWeb.MVC.Data;
+using SalesWeb.MVC.Helpers;
 using SalesWeb.MVC.Models;
 using SalesWeb.MVC.Models.Exceptions;
 using SalesWeb.MVC.Services.Exceptions;
@@ -18,7 +19,7 @@ namespace SalesWeb.MVC.Services
         public async Task CreateAsync(Seller seller)
         {
             if (await SellerExistsAsync(seller))
-                throw new DomainException("Seller already registered");
+                throw new DomainException("Seller already registered"); // TODO: Centralizar mensagens de erro
 
             _context.Add(seller);
 
@@ -49,9 +50,16 @@ namespace SalesWeb.MVC.Services
             if (seller is null)
                 return;
 
-            _context.Seller.Remove(seller);
-            
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Seller.Remove(seller);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new IntegrityException(ErrorMessagesHelper.InvalidDeleteSeller);
+            }
         }
 
         public async Task<Seller> GetAsync(int id) => await _context.Seller.Include(d => d.Department).FirstOrDefaultAsync(d => d.Id == id);

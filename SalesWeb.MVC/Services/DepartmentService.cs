@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesWeb.MVC.Data;
+using SalesWeb.MVC.Helpers;
 using SalesWeb.MVC.Models;
 using SalesWeb.MVC.Models.Exceptions;
 using SalesWeb.MVC.Services.Exceptions;
@@ -44,9 +45,16 @@ namespace SalesWeb.MVC.Services
 
         public async Task DeleteAsync(Department department)
         {
-            _context.Department.Remove(department);
+            try
+            {
+                _context.Department.Remove(department);
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new IntegrityException(ErrorMessagesHelper.InvalidDeleteDepartment);
+            }
         }
 
         public async Task<Department> GetAsync(int id) => await _context.Department.FindAsync(id);

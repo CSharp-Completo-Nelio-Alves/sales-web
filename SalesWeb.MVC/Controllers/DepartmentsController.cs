@@ -122,12 +122,19 @@ namespace SalesWeb.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var department = await _service.GetAsync(id);
+            try
+            {
+                var department = await _service.GetAsync(id);
 
-            if (department is null)
-                return RedirectToAction(nameof(Error), new { message = "Id not found" });
+                if (department is null)
+                    return RedirectToAction(nameof(Error), new { message = "Id not found" });
 
-            await _service.DeleteAsync(department);
+                await _service.DeleteAsync(department);
+            }
+            catch (ApplicationException ex)
+            {
+                return RedirectToAction(nameof(Error), new { message = ex.Message });
+            }
 
             return RedirectToAction(nameof(Index));
         }
