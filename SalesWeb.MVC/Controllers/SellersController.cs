@@ -12,6 +12,8 @@ namespace SalesWeb.MVC.Controllers
         private readonly SellerService _service;
         private readonly DepartmentService _departmentService;
 
+        private readonly string _defaultReturnRoute = "/Sellers";
+
         public SellersController(SellerService service, DepartmentService departmentService)
         {
             _service = service;
@@ -63,12 +65,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided, returnUrl = _defaultReturnRoute });
 
             var seller = await _service.GetAsync(id.Value);
 
             if (seller is null)
-                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Seller)) });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Seller)), returnUrl = _defaultReturnRoute });
 
             var model = new SellerViewModel
             {
@@ -84,7 +86,7 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,BirthDate,BaseSalary,DepartmentId")] Seller seller)
         {
             if (id != seller.Id)
-                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdMistmatch });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdMistmatch, returnUrl = _defaultReturnRoute });
 
             if (!ModelState.IsValid)
             {
@@ -107,7 +109,7 @@ namespace SalesWeb.MVC.Controllers
             }
             catch (ApplicationException ex)
             {
-                return RedirectToAction(nameof(Error), new { message = ex.Message });
+                return RedirectToAction(nameof(Error), new { message = ex.Message, returnUrl = _defaultReturnRoute });
             }
         }
 
@@ -115,12 +117,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided, returnUrl = _defaultReturnRoute });
 
             var seller = await _service.GetAsync(id.Value);
 
             if (seller is null)
-                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Seller)) });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Seller)), returnUrl = _defaultReturnRoute });
 
             return View(seller);
         }
@@ -129,12 +131,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided, returnUrl = _defaultReturnRoute });
 
             var seller = await _service.GetAsync(id.Value);
 
             if (seller is null)
-                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Seller)) });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Seller)), returnUrl = _defaultReturnRoute });
 
             return View(seller);
         }
@@ -151,7 +153,7 @@ namespace SalesWeb.MVC.Controllers
             }
             catch (ApplicationException ex)
             {
-                return RedirectToAction(nameof(Error), new { message = ex.Message });
+                return RedirectToAction(nameof(Error), new { message = ex.Message, returnUrl = _defaultReturnRoute });
             }
         }
     }

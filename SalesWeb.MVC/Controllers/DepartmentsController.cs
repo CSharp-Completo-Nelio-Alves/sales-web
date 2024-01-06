@@ -10,6 +10,8 @@ namespace SalesWeb.MVC.Controllers
     {
         private readonly DepartmentService _service;
 
+        private readonly string _defaultReturnRoute = $"/Departments";
+
         public DepartmentsController(DepartmentService service)
         {
             _service = service;
@@ -25,12 +27,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided, returnUrl = _defaultReturnRoute });
 
             var department = await _service.GetAsync(id.Value);
 
             if (department is null)
-                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)) });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)), returnUrl = _defaultReturnRoute });
 
             return View(department);
         }
@@ -55,7 +57,7 @@ namespace SalesWeb.MVC.Controllers
                 }
                 catch (ApplicationException ex)
                 {
-                    return RedirectToAction(nameof(Error), new { message = ex.Message });
+                    return RedirectToAction(nameof(Error), new { message = ex.Message, returnUrl = _defaultReturnRoute });
                 }
             }
 
@@ -68,12 +70,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided, returnUrl = _defaultReturnRoute });
 
             var department = await _service.GetAsync(id.Value);
 
             if (department is null)
-                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)) });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)), returnUrl = _defaultReturnRoute });
 
             return View(department);
         }
@@ -93,7 +95,7 @@ namespace SalesWeb.MVC.Controllers
                 }
                 catch (ApplicationException ex)
                 {
-                    return RedirectToAction(nameof(Error), new { message = ex.Message });
+                    return RedirectToAction(nameof(Error), new { message = ex.Message, returnUrl = _defaultReturnRoute });
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -108,12 +110,12 @@ namespace SalesWeb.MVC.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
-                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided });
+                return RedirectToAction(nameof(Error), new { message = ErrorMessagesHelper.IdNotProvided, returnUrl = _defaultReturnRoute });
 
             var department = await _service.GetAsync(id.Value);
 
             if (department is null)
-                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)) });
+                return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)), returnUrl = _defaultReturnRoute });
 
             return View(department);
         }
@@ -127,13 +129,13 @@ namespace SalesWeb.MVC.Controllers
                 var department = await _service.GetAsync(id);
 
                 if (department is null)
-                    return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)) });
+                    return RedirectToAction(nameof(Error), new { message = string.Format(ErrorMessagesHelper.EntityNotFound, nameof(Department)), returnUrl = _defaultReturnRoute });
 
                 await _service.DeleteAsync(department);
             }
             catch (ApplicationException ex)
             {
-                return RedirectToAction(nameof(Error), new { message = ex.Message });
+                return RedirectToAction(nameof(Error), new { message = ex.Message, returnUrl = _defaultReturnRoute });
             }
 
             return RedirectToAction(nameof(Index));
